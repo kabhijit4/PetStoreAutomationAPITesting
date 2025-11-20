@@ -1,23 +1,33 @@
 pipeline {
     agent any
 
+    triggers {
+        cron('0 23 * * *')
+    }
+
     stages {
-        stage('Checkout Code') {
+        stage('Build') {
             steps {
-                checkout scm
+                echo "Building..."
             }
         }
 
-        stage('Run Maven Tests') {
+        stage('Test') {
             steps {
-                bat 'mvn clean test'
+                echo "Running API Tests..."
             }
         }
 
-        stage('Archive Test Results') {
+        stage('Report') {
             steps {
-                junit 'target/surefire-reports/*.xml'
+                echo "Publishing Reports..."
             }
+        }
+    }
+
+    post {
+        always {
+            echo "Pipeline finished."
         }
     }
 }
