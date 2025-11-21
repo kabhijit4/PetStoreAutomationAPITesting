@@ -1,5 +1,6 @@
 package api.tests;
 
-public class PetTests {
-
+public class PetTests 
+{
+	
 }
