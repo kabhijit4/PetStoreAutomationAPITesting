@@ -2,28 +2,21 @@ pipeline {
     agent any
 
     triggers {
-        cron('0 17 * * *')   // Runs every day at 4 PM IST
+        cron('0 17 * * *')
     }
 
     stages {
 
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
-
         stage('Build') {
             steps {
-                echo "Running Maven Build on Windows..."
-                bat "mvn clean install -DskipTests=false"
+                echo "Building..."
+                sh 'mvn clean test'
             }
         }
 
-        stage('Run Tests') {
+        stage('Test') {
             steps {
-                echo "Running TestNG Tests..."
-                bat "mvn test"
+                echo "Running API Tests..."
             }
         }
 
@@ -37,14 +30,7 @@ pipeline {
     post {
         always {
             echo "Publishing Results..."
-
-            // Publish TestNG XML report
-            junit 'test-output/testng-results.xml'
-
-            // Optional: archive your entire test-output folder
-            archiveArtifacts artifacts: 'test-output/**/*.*', allowEmptyArchive: true
-
-            echo "Pipeline finished."
+            junit '**/surefire-reports/*.xml'
         }
     }
 }
